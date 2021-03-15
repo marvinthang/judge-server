@@ -32,8 +32,10 @@ class ContribModule(TestlibContribModule):
         time_limit: float,
         memory_limit: int,
         feedback: str,
+        extended_feedback: str,
         name: str,
         stderr: bytes,
+        **kwargs,
     ):
         if proc.returncode == cls.PARTIAL:
             match = cls.repartial.search(stderr)
@@ -43,8 +45,17 @@ class ContribModule(TestlibContribModule):
             if not 0.0 <= percentage <= 1.0:
                 raise InternalError(f'Invalid fraction: {utf8text(match.group(1))}')
             points = percentage * point_value
-            return CheckerResult(True, points, feedback=feedback)
+            return CheckerResult(True, points, feedback=feedback, extended_feedback=extended_feedback)
         else:
             return super().parse_return_code(
-                proc, executor, point_value, time_limit, memory_limit, feedback, name, stderr
+                proc,
+                executor,
+                point_value,
+                time_limit,
+                memory_limit,
+                feedback,
+                extended_feedback,
+                name,
+                stderr,
+                **kwargs,
             )

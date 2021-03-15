@@ -32,7 +32,9 @@ class BaseContribModule:
         time_limit: float,
         memory_limit: int,
         feedback: str,
+        extended_feedback: str,
         name: str,
         stderr: bytes,
+        **kwargs,
     ):
         raise NotImplementedError
