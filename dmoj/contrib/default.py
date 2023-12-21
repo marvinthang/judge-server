@@ -37,6 +37,7 @@ class ContribModule(BaseContribModule):
         extended_feedback: str,
         name: str,
         stderr: bytes,
+        **kwargs
     ):
         if proc.returncode == cls.AC:
             return CheckerResult(True, point_value, feedback=feedback, extended_feedback=extended_feedback)

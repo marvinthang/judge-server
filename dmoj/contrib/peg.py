@@ -29,6 +29,7 @@ class ContribModule(BaseContribModule):
         extended_feedback: str,
         name: str,
         stderr: bytes,
+        **kwargs,
     ):
         if proc.returncode in (cls.AC, cls.WA):
             # PEG allows for a ratio of floating points, and can give partials for AC or WA
