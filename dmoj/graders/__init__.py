@@ -5,3 +5,4 @@ from dmoj.graders.interactive import InteractiveGrader
 from dmoj.graders.output_only import OutputOnlyGrader
 from dmoj.graders.signature import SignatureGrader
 from dmoj.graders.standard import StandardGrader
+from dmoj.graders.two_phase_signature import TwoPhaseSignatureGrader

@@ -1,0 +1,5 @@
+language: CPP17
+time: 2
+memory: 65536
+source: two_phase_siggrade.cpp
+expect: AC

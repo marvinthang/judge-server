@@ -210,6 +210,8 @@ class Problem:
 
         if 'custom_judge' in self.config:
             return cast(Type['BaseGrader'], graders.CustomGrader)
+        elif 'two_phase_signature_grader' in self.config:
+            return graders.TwoPhaseSignatureGrader
         elif 'signature_grader' in self.config:
             return graders.SignatureGrader
         elif 'interactive' in self.config:
@@ -322,7 +324,7 @@ class ProblemConfig(ConfigNode):
                 doc,
                 defaults={
                     'wall_time_factor': 3,
-                    'output_prefix_length': 0 if 'signature_grader' in doc else 128,
+                    'output_prefix_length': 0 if 'signature_grader' in doc or 'two_phase_signature_grader' in doc else 128,
                     'output_limit_length': 25165824,
                     'binary_data': False,
                     'short_circuit': True,

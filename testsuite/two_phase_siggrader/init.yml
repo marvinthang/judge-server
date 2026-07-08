@@ -1,0 +1,10 @@
+two_phase_signature_grader:
+  phase1:
+    entry: handler.cpp
+    header: header.h
+  phase2:
+    entry: handler.cpp
+    header: header.h
+test_cases:
+- {in: two_phase_siggrader.1.in, out: two_phase_siggrader.1.out, points: 50}
+- {in: two_phase_siggrader.2.in, out: two_phase_siggrader.2.out, points: 50}
