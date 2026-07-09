@@ -23,20 +23,23 @@ class TwoPhaseSignatureGrader(StandardGrader):
             return phase1_result
 
         phase2_input = MemoryIO()
-        original_input = input_file.to_bytes()
-        phase2_input.write(original_input)
-        if original_input and not original_input.endswith(b'\n'):
-            phase2_input.write(b'\n')
-        phase2_input.write(phase1_result.proc_output)
-        phase2_input.seal()
+        try:
+            original_input = input_file.to_bytes()
+            phase2_input.write(original_input)
+            if original_input and not original_input.endswith(b'\n'):
+                phase2_input.write(b'\n')
+            phase2_input.write(phase1_result.proc_output)
+            phase2_input.seal()
 
-        phase2_result = self._run_phase(case, self.phase2_binary, phase2_input)
-
-        if phase2_result.result_flag:
-            case.free_data()
-            return phase2_result
+            phase2_result = self._run_phase(case, self.phase2_binary, phase2_input)
+        finally:
+            phase2_input.close()
 
         self._merge_phase_results(result, phase1_result, phase2_result)
+        if phase2_result.result_flag:
+            case.free_data()
+            return result
+
         check = self.check_result(case, result)
 
         # checkers must either return a boolean (True: full points, False: 0 points)
