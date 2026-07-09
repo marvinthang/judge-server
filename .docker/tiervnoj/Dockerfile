@@ -26,11 +26,34 @@ RUN ARCH=$([ $(uname -m) = "x86_64" ] && echo "amd64" || echo "arm64") && \
 	runuser judge -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y' && \
 		mkdir rust && ( \
 			cd rust && \
-			curl -sL https://raw.githubusercontent.com/DMOJ/judge/master/dmoj/executors/RUST.py | \
-				sed '/^CARGO_TOML/,/^"""/!d;//d' > Cargo.toml && \
+			printf '%s\n' \
+				'[package]' \
+				'name = "user_submission"' \
+				'version = "1.0.0"' \
+				'edition = "2021"' \
+				'' \
+				'[dependencies]' \
+				'dmoj = "0.1"' \
+				'libc = "0.2"' \
+				'rand = "0.8"' \
+				'rand_xoshiro = "0.6"' \
+				'' \
+				'[profile.release]' \
+				'strip = "symbols"' \
+				> Cargo.toml && \
 			mkdir src && \
-			curl -sL https://raw.githubusercontent.com/DMOJ/judge/master/dmoj/executors/RUST.py | \
-				sed '/^TEST_PROGRAM/,/^"""/!d;//d' > src/main.rs && \
+			printf '%s\n' \
+				'use dmoj as _;' \
+				'use libc as _;' \
+				'use rand as _;' \
+				'use rand_xoshiro as _;' \
+				'' \
+				'use std::io;' \
+				'fn main() -> io::Result<()> {' \
+				'    io::copy(&mut io::stdin(), &mut io::stdout())?;' \
+				'    Ok(())' \
+				'}' \
+				> src/main.rs && \
 			chown -R judge: . && \
 			runuser -u judge /home/judge/.cargo/bin/cargo fetch \
 		) && \
