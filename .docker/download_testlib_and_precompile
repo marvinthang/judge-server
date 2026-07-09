@@ -2,13 +2,25 @@
 
 FLAGS="-Wall -DONLINE_JUDGE -O2 -fmax-errors=5 -march=native -s"
 
+download_header() {
+  local url="$1"
+  local output="$2"
+
+  curl -fL --retry 5 --retry-delay 5 "$url" -o "$output"
+  if grep -qi "Too Many Requests" "$output"; then
+    echo "Downloaded $output contains a rate-limit response" >&2
+    return 1
+  fi
+}
+
 # Download and precompile testlib.h
-curl -L https://raw.githubusercontent.com/VNOI-Admin/testlib/master/testlib.h -o /usr/include/testlib.h
+download_header https://raw.githubusercontent.com/VNOI-Admin/testlib/master/testlib.h /usr/include/testlib.h || \
+  cp /judge/testsuite/generator_multifile/testlib.h /usr/include/testlib.h
 sed -i '/^#include <cstdio>/a#include <cstdint>' /usr/include/testlib.h
 g++ -std=c++17 $FLAGS /usr/include/testlib.h
 
 # Download and precompile testlib_themis_cms.h
-curl -L https://raw.githubusercontent.com/VNOI-Admin/testlib/master/testlib_themis_cms.h -o /usr/include/testlib_themis_cms.h
+download_header https://raw.githubusercontent.com/VNOI-Admin/testlib/master/testlib_themis_cms.h /usr/include/testlib_themis_cms.h
 sed -i '/^#include <cstdio>/a#include <cstdint>' /usr/include/testlib_themis_cms.h
 mkdir -p /usr/include/testlib_themis_cms.h.gch
 g++ -std=c++17 $FLAGS -DTHEMIS /usr/include/testlib_themis_cms.h -o /usr/include/testlib_themis_cms.h.gch/themis
